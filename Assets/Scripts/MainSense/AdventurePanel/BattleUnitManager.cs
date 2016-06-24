@@ -63,7 +63,7 @@ public class BattleUnitManager : GameElementManager
             }
             else if (newValue > ele.maxValue) {
                 Toast.Pop("你缺少" + ele.name);
-            } else{
+            } else if(newValue >= 0){
                 ele.value = newValue;
                 //Notify();
                 return true;

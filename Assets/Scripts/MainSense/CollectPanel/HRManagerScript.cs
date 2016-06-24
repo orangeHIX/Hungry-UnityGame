@@ -38,8 +38,8 @@ public class HRManagerScript : GameElementManager {
     }
 
     // Use this for initialization
-    void Awake () {
-
+    public override void Awake () {
+        base.Awake();
         humanMaxNum = 100;
         humanNum = 10;
 
