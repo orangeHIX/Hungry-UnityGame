@@ -4,6 +4,7 @@ using System.Collections;
 
 public enum StorePattern {
     resource,battle,build
+
 }
 
 public class StorePanelScript : MonoBehaviour {

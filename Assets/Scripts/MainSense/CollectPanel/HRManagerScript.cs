@@ -266,4 +266,9 @@ public class HRManagerScript : GameElementManager {
     {
         return currStaffList;
     }
+
+    public override void SetDataList(string name, List<GameElement> dataList)
+    {
+        currStaffList = dataList;
+    }
 }

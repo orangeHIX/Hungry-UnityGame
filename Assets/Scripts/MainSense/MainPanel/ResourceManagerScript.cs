@@ -98,4 +98,9 @@ public class ResourceManagerScript : GameElementManager
     {
         return currResList;
     }
+
+    public override void SetDataList(string name, List<GameElement> dataList)
+    {
+        currResList = dataList;
+    }
 }

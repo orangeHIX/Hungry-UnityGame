@@ -91,4 +91,9 @@ public class BattleUnitManager : GameElementManager
     {
         return unitList;
     }
+
+    public override void SetDataList(string name, List<GameElement> dataList)
+    {
+        unitList = dataList;
+    }
 }

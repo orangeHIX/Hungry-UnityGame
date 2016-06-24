@@ -2,15 +2,33 @@
 using System.Collections.Generic;
 using System;
 using System.Text;
+using System.IO;
 
 public class GoodsSellerManager : GameElementManager {
 
     public GameObject resourceManager;
     public GameObject HRManager;
     public GameObject battleUnitManager;
-    public List<GameElement> resourceList =new List<GameElement>();
-    public List<GameElement> buildList = new List<GameElement>();
-    public List<GameElement> battleUnitList = new List<GameElement>();
+
+    Dictionary<StorePattern, List<GameElement>> dict = new Dictionary<StorePattern, List<GameElement>>();
+
+    public List<GameElement> resourceList {
+
+        get {
+            return dict[StorePattern.resource];
+        }
+    }// = new List<GameElement>();
+    public List<GameElement> buildList {
+        get {
+            return dict[StorePattern.build];
+        }
+    }// = new List<GameElement>();
+    public List<GameElement> battleUnitList {
+        get {
+            return dict[StorePattern.battle];
+        }
+    } //= new List<GameElement>();
+
     public StorePattern storePattern {
         set {
             pattern = value;
@@ -28,6 +46,11 @@ public class GoodsSellerManager : GameElementManager {
     StorePattern pattern;
 
     public void Awake() {
+        dict.Clear();
+        dict.Add(StorePattern.resource, new List<GameElement>());
+        dict.Add(StorePattern.build, new List<GameElement>());
+        dict.Add(StorePattern.battle, new List<GameElement>());
+
         Good g = new Good("芯片",1,true, true,"just a box");
         g.materialList.Add(new GameElement("gold", 5));
         g.item = new GameElement("芯片", 1, true);
@@ -94,18 +117,7 @@ public class GoodsSellerManager : GameElementManager {
         }
     }
 
-    public override List<GameElement> GetDataList(string name)
-    {
-        switch (storePattern) {
-            case StorePattern.resource:
-                return resourceList;
-            case StorePattern.battle:
-                return battleUnitList;
-            case StorePattern.build:
-                return buildList;
-        }
-        return null;
-    }
+
 
     public override bool TryChangeGameElementValue(string name, int change)
     {
@@ -227,23 +239,64 @@ public class GoodsSellerManager : GameElementManager {
 
     }
 
-    //StringBuilder stringBuilder = new StringBuilder(50);
-    //string GetMaterialListString( Good good)
-    //{
-    //    stringBuilder.Remove(0, stringBuilder.Length);
-    //    string delimiter = " ";
-    //    foreach (GameElement ele in good.materialList)
-    //    {
-    //            stringBuilder.Append(ele.name).Append(" * ");
-    //            stringBuilder.Append(ele.value.ToString("+#;-#;0"));
-    //            stringBuilder.Append(delimiter);
+    public override List<GameElement> GetDataList(string name)
+    {
+        if (name == DEFAULT_DATA_LIST_NAME)
+        {
+            return dict[storePattern];
+        }
+        else {
+            StorePattern p = (StorePattern)Enum.Parse(typeof(StorePattern), name);
+            return dict[p];
+        }
+    }
 
-    //    }
-    //    if (stringBuilder.Length > 1)
-    //    {
-    //        stringBuilder.Remove(stringBuilder.Length - delimiter.Length, delimiter.Length);
-    //        return stringBuilder.ToString();
-    //    }
-    //    return "";
-    //}
+    public override void SetDataList(string name, List<GameElement> dataList)
+    {
+        if (name == DEFAULT_DATA_LIST_NAME)
+        {
+            if (dict.ContainsKey(storePattern))
+            {
+                dict.Remove(storePattern);
+            }
+            dict.Add(storePattern, dataList);
+        }
+        else {
+            StorePattern p = (StorePattern)Enum.Parse(typeof(StorePattern), name);
+            if (dict.ContainsKey(p))
+            {
+                dict.Remove(p);
+            }
+            dict.Add(p, dataList);
+        }
+    }
+
+    public override void SaveData() {
+        if (!Directory.Exists("Saves"))
+            Directory.CreateDirectory("Saves");
+
+        foreach (StorePattern p in Enum.GetValues(typeof(StorePattern)))
+        {
+            using (FileStream fs = File.Create(GetFileName(p)))
+            {
+                binFormat.Serialize(fs, GetDataList(p.ToString()));
+            }
+        }
+    }
+
+    public override void LoadData()
+    {
+        foreach (StorePattern p in Enum.GetValues(typeof(StorePattern)))
+        {
+            using (FileStream fs = File.OpenRead(GetFileName(p)))
+            {
+                List<GameElement> dataList = (List<GameElement>)binFormat.Deserialize(fs);
+                SetDataList(p.ToString(), dataList);
+            }
+        }
+    }
+
+    private string GetFileName(StorePattern p) {
+        return DIRECTORY_NAME + "/" + GetType().Name +"_"+ p.ToString()+ SUFFIXE;
+    }
 }

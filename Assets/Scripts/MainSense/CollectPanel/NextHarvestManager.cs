@@ -7,7 +7,8 @@ public class NextHarvestManager : GameElementManager {
 
     public List<GameElement> currNextHarVolList = new List<GameElement>();
 
-    void Awake() {
+    public override void Awake() {
+        base.Awake();
         InitNextHarVolList();
     }
 
@@ -34,4 +35,8 @@ public class NextHarvestManager : GameElementManager {
         return currNextHarVolList;
     }
 
+    public override void SetDataList(string name, List<GameElement> dataList)
+    {
+        currNextHarVolList = dataList;
+    }
 }
