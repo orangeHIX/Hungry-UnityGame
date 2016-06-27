@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using System;
 
 public class NextHarvestTimeScript : MonoBehaviour{
 
@@ -61,4 +62,5 @@ public class NextHarvestTimeScript : MonoBehaviour{
             nextHarvestTime / 60,
             nextHarvestTime % 60);
     }
+
 }

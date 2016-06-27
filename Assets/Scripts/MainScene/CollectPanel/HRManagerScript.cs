@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System;
 using System.Text;
+using System.Xml;
+using System.IO;
 
 public class HRManagerScript : GameElementManager {
 
@@ -12,8 +14,8 @@ public class HRManagerScript : GameElementManager {
     public GameObject resourceManager;
 
     ResourceManagerScript resourceManagerScript;
-    private int humanNum;
-    private int humanMaxNum;
+    public int humanNum;
+    public int humanMaxNum;
 
 
     Dictionary<string, int> harvestDict = new Dictionary<string, int>();
@@ -21,69 +23,29 @@ public class HRManagerScript : GameElementManager {
 
     NextHarvestManager nextHarvestManager;
 
-    public int HRNum
-    {
-        get
-        {
-            return humanNum;
-        }
-    }
+    //public int HRNum
+    //{
+    //    get
+    //    {
+    //        return humanNum;
+    //    }
+    //}
 
-    public int HRMaxNum
-    {
-        get
-        {
-            return humanMaxNum;
-        }
-    }
+    //public int HRMaxNum
+    //{
+    //    get
+    //    {
+    //        return humanMaxNum;
+    //    }
+    //}
 
     // Use this for initialization
     public override void Awake () {
         base.Awake();
-        humanMaxNum = 100;
-        humanNum = 10;
-
-        Staff s1 = new Staff("farmer",10,true);
-        s1.consumeList = new List<GameElement>();
-        s1.produceList = new List<GameElement>();
-        s1.produceList.Add(new GameElement("food",1));
-
-        Staff s2 = new Staff("worker",0,false);
-        s2.consumeList = new List<GameElement>();
-        s2.consumeList.Add(new GameElement("food", 2));
-        s2.produceList = new List<GameElement>();
-        s2.produceList.Add(new GameElement("iron", 1));
-
-        Staff s3 = new Staff("fisher", 2, true);
-        s3.consumeList = new List<GameElement>();
-        s3.produceList = new List<GameElement>();
-        s3.produceList.Add(new GameElement("fish", 5));
 
 
 
-        currStaffList.Clear();
-        currStaffList.Add(s1);
-        currStaffList.Add(s2);
-        currStaffList.Add(s3);
-
-        //currHRList.Clear();
-        //currHRList.Add(new GameElement("farmer", 10, true));
-        //currHRList.Add(new GameElement("worker", 0, true));
-        //currHRList.Add(new GameElement("fisher", 5, true));
-
-        //InitNextHarVolList();
     }
-
-    //public void InitNextHarVolList()
-    //{
-    //    currNextHarVolList.Clear();
-    //    currNextHarVolList.Add(new GameElement("food", 0, false));
-    //    currNextHarVolList.Add(new GameElement("iron", 0, false));
-    //    currNextHarVolList.Add(new GameElement("fish", 0, false));
-    //    currNextHarVolList.Add(new GameElement("gold", 0, false));
-    //    currNextHarVolList.ForEach(x => { x.value = 0; x.enabled = false; });
-    //    currStaffList.ForEach(x => changeRelatedNextHar(x as Staff, x.value));
-    //}
 
     // Use this for initialization
     public override void Start()
@@ -271,4 +233,78 @@ public class HRManagerScript : GameElementManager {
     {
         currStaffList = dataList;
     }
+
+    public override void LoadDataFirstTime()
+    {
+        currStaffList.Clear();
+
+        Staff s1 = new Staff("farmer", 10, true);
+        s1.consumeList = new List<GameElement>();
+        s1.produceList = new List<GameElement>();
+        s1.produceList.Add(new GameElement("food", 1));
+
+        Staff s2 = new Staff("worker", 0, false);
+        s2.consumeList = new List<GameElement>();
+        s2.consumeList.Add(new GameElement("food", 2));
+        s2.produceList = new List<GameElement>();
+        s2.produceList.Add(new GameElement("iron", 1));
+
+        Staff s3 = new Staff("fisher", 2, true);
+        s3.consumeList = new List<GameElement>();
+        s3.produceList = new List<GameElement>();
+        s3.produceList.Add(new GameElement("fish", 5));
+
+
+        currStaffList.Clear();
+        currStaffList.Add(s1);
+        currStaffList.Add(s2);
+        currStaffList.Add(s3);
+
+        humanMaxNum = 20;
+        int sum = 0;
+        currStaffList.ForEach(x=>sum += x.value);
+        humanNum = 20 - sum;
+    }
+
+    const string ROOT_NODE_NAME = "HR";
+    const string HR_NUM_NODE_NAME = "HRNum";
+    const string HR_MAX_NUM_NODE_NAME = "HRMaxNum";
+    const string XML_FILE_NAME = DIRECTORY_NAME + "/HRNum.xml";
+
+    public override void SaveData()
+    {
+        base.SaveData();
+
+        XmlDocument doc = new XmlDocument();
+        XmlNode rootNode = doc.CreateElement(ROOT_NODE_NAME);
+
+        XmlNode HRNumNode = doc.CreateElement(HR_NUM_NODE_NAME);
+        HRNumNode.InnerText = humanNum.ToString();
+
+        XmlNode HRMaxNumNode = doc.CreateElement(HR_MAX_NUM_NODE_NAME);
+        HRMaxNumNode.InnerText = humanMaxNum.ToString();
+
+        rootNode.AppendChild(HRNumNode);
+        rootNode.AppendChild(HRMaxNumNode);
+
+        doc.AppendChild(rootNode);
+        doc.Save(XML_FILE_NAME);
+
+    }
+
+    public override void LoadData()
+    {
+        base.LoadData();
+        if (File.Exists(XML_FILE_NAME))
+        {
+            XmlDocument doc = new XmlDocument();
+
+            doc.Load(XML_FILE_NAME);
+            XmlNodeList xnl = doc.SelectSingleNode(ROOT_NODE_NAME).ChildNodes;
+
+            humanNum = int.Parse(xnl.Item(0).InnerText);
+            humanMaxNum = int.Parse(xnl.Item(1).InnerText);
+        }
+    }
+
 }

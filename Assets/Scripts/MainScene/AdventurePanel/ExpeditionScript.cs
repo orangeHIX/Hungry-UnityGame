@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
-public class GameElementReaderScript : MonoBehaviour {
+public class ExpeditionScript : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
@@ -13,5 +14,7 @@ public class GameElementReaderScript : MonoBehaviour {
 	
 	}
 
+    public void Go() {
+        SceneManager.LoadScene("battle");
+    }
 }
-

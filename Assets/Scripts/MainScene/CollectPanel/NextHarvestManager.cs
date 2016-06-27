@@ -7,12 +7,17 @@ public class NextHarvestManager : GameElementManager {
 
     public List<GameElement> currNextHarVolList = new List<GameElement>();
 
-    public override void Awake() {
-        base.Awake();
-        InitNextHarVolList();
+    public override List<GameElement> GetDataList(string name)
+    {
+        return currNextHarVolList;
     }
 
-    public void InitNextHarVolList()
+    public override void SetDataList(string name, List<GameElement> dataList)
+    {
+        currNextHarVolList = dataList;
+    }
+
+    public override void LoadDataFirstTime()
     {
         currNextHarVolList.Clear();
         currNextHarVolList.Add(new GameElement("food", 0, false));
@@ -22,21 +27,8 @@ public class NextHarvestManager : GameElementManager {
         currNextHarVolList.ForEach(x => { x.value = 0; x.enabled = false; });
     }
 
-
-
-
-    // Use this for initialization
-    public override void Start () {
-        base.Start();
-    }
-	
-    public override List<GameElement> GetDataList(string name)
+    public override bool needPersistence()
     {
-        return currNextHarVolList;
-    }
-
-    public override void SetDataList(string name, List<GameElement> dataList)
-    {
-        currNextHarVolList = dataList;
+        return false;
     }
 }

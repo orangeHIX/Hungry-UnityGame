@@ -45,60 +45,8 @@ public class GoodsSellerManager : GameElementManager {
 
     StorePattern pattern;
 
-    public void Awake() {
-        dict.Clear();
-        dict.Add(StorePattern.resource, new List<GameElement>());
-        dict.Add(StorePattern.build, new List<GameElement>());
-        dict.Add(StorePattern.battle, new List<GameElement>());
-
-        Good g = new Good("芯片",1,true, true,"just a box");
-        g.materialList.Add(new GameElement("gold", 5));
-        g.item = new GameElement("芯片", 1, true);
-        resourceList.Add(g);
-
-        g = new Good("生命药品*2", 1, false, true, "just a box");
-        g.materialList.Add(new GameElement("fish", 2));
-        g.materialList.Add(new GameElement("gold", 6));
-        g.item = new GameElement("生命药品", 2, true);
-        resourceList.Add(g);
-
-        g = new Good("超合金", 1, true, false, "just a box");
-        g.materialList.Add(new GameElement("food", 2));
-        g.materialList.Add(new GameElement("iron", 5));
-        g.materialList.Add(new GameElement("fish", 1));
-        g.materialList.Add(new GameElement("gold", 6));
-        g.item = new GameElement("超合金", 1, true);
-        resourceList.Add(g);
-
-        //=================================================================
-        g = new Good("居住地",1,true,true,"简陋的工人居住的地方");
-        g.materialList.Add(new GameElement("gold", 10));
-        g.item = new Shelter("居住地", 1, true, 10);
-        buildList.Add(g);
-
-
-        g = new Good("冶炼厂", 1, false, true, "just a factory");
-        g.materialList.Add(new GameElement("gold", 10));
-        g.item = new ProductionBuilding("冶炼厂", 1, true, "worker");
-        buildList.Add(g);
-
-        //=================================================================
-        g = new Good("陆战队", 1, true, true, "大量且廉价的战士");
-        g.materialList.Add(new GameElement("gold", 5));
-        g.item = new BattleUnit("陆战队", "大量且廉价的战士", true, 10f,1f,1f,1f);
-        battleUnitList.Add(g);
-
-        g = new Good("狙击手", 1, true, true, "训练有素的幽灵部队");
-        g.materialList.Add(new GameElement("gold", 6));
-        g.materialList.Add(new GameElement("fish", 10));
-        g.item = new BattleUnit("狙击手", "训练有素的幽灵部队", true, 10f, 1f, 1f, 2f);
-        battleUnitList.Add(g);
-
-        g = new Good("医疗兵", 1, true, true, "战场天使");
-        g.materialList.Add(new GameElement("gold", 7));
-        g.item = new BattleUnit("医疗兵", "战场天使", true, 10f, 1f, 1f, 1f);
-        battleUnitList.Add(g);
-
+    public override void Awake() {
+        base.Awake();
 
         pattern = StorePattern.resource;
     }
@@ -288,15 +236,78 @@ public class GoodsSellerManager : GameElementManager {
     {
         foreach (StorePattern p in Enum.GetValues(typeof(StorePattern)))
         {
-            using (FileStream fs = File.OpenRead(GetFileName(p)))
+            string path = GetFileName(p);
+            if (File.Exists(path))
             {
-                List<GameElement> dataList = (List<GameElement>)binFormat.Deserialize(fs);
-                SetDataList(p.ToString(), dataList);
+                using (FileStream fs = File.OpenRead(path))
+                {
+                    List<GameElement> dataList = (List<GameElement>)binFormat.Deserialize(fs);
+                    SetDataList(p.ToString(), dataList);
+                }
+            }
+            else {
+                Debug.LogError("File " + path +" doesn't exisit");
             }
         }
     }
 
     private string GetFileName(StorePattern p) {
         return DIRECTORY_NAME + "/" + GetType().Name +"_"+ p.ToString()+ SUFFIXE;
+    }
+
+    public override void LoadDataFirstTime()
+    {
+        dict.Clear();
+        dict.Add(StorePattern.resource, new List<GameElement>());
+        dict.Add(StorePattern.build, new List<GameElement>());
+        dict.Add(StorePattern.battle, new List<GameElement>());
+
+        Good g = new Good("芯片", 1, true, true, "just a box");
+        g.materialList.Add(new GameElement("gold", 5));
+        g.item = new GameElement("芯片", 1, true);
+        resourceList.Add(g);
+
+        g = new Good("生命药品*2", 1, false, true, "just a box");
+        g.materialList.Add(new GameElement("fish", 2));
+        g.materialList.Add(new GameElement("gold", 6));
+        g.item = new GameElement("生命药品", 2, true);
+        resourceList.Add(g);
+
+        g = new Good("超合金", 1, true, false, "just a box");
+        g.materialList.Add(new GameElement("food", 2));
+        g.materialList.Add(new GameElement("iron", 5));
+        g.materialList.Add(new GameElement("fish", 1));
+        g.materialList.Add(new GameElement("gold", 6));
+        g.item = new GameElement("超合金", 1, true);
+        resourceList.Add(g);
+
+        //=================================================================
+        g = new Good("居住地", 1, true, true, "简陋的工人居住的地方");
+        g.materialList.Add(new GameElement("gold", 10));
+        g.item = new Shelter("居住地", 1, true, 10);
+        buildList.Add(g);
+
+
+        g = new Good("冶炼厂", 1, false, true, "just a factory");
+        g.materialList.Add(new GameElement("gold", 10));
+        g.item = new ProductionBuilding("冶炼厂", 1, true, "worker");
+        buildList.Add(g);
+
+        //=================================================================
+        g = new Good("陆战队", 1, true, true, "大量且廉价的战士");
+        g.materialList.Add(new GameElement("gold", 5));
+        g.item = new BattleUnit("陆战队", "大量且廉价的战士", true, 10f, 1f, 1f, 1f);
+        battleUnitList.Add(g);
+
+        g = new Good("狙击手", 1, true, true, "训练有素的幽灵部队");
+        g.materialList.Add(new GameElement("gold", 6));
+        g.materialList.Add(new GameElement("fish", 10));
+        g.item = new BattleUnit("狙击手", "训练有素的幽灵部队", true, 10f, 1f, 1f, 2f);
+        battleUnitList.Add(g);
+
+        g = new Good("医疗兵", 1, true, true, "战场天使");
+        g.materialList.Add(new GameElement("gold", 7));
+        g.item = new BattleUnit("医疗兵", "战场天使", true, 10f, 1f, 1f, 1f);
+        battleUnitList.Add(g);
     }
 }

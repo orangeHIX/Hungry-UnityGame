@@ -12,7 +12,7 @@ public class HRNumScript : MonoBehaviour, IDataChangeListener {
     public void OnDataChange()
     {
         if (HRText != null && HRManagerScript != null) {
-            HRText.text = String.Format("人力 {0}/{1}", HRManagerScript.HRNum, HRManagerScript.HRMaxNum);
+            HRText.text = String.Format("人力 {0}/{1}", HRManagerScript.humanNum, HRManagerScript.humanMaxNum);
         }
     }
 

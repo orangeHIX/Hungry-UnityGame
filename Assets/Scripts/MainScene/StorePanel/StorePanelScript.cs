@@ -15,8 +15,8 @@ public class StorePanelScript : MonoBehaviour {
 
     GoodsSellerManager goodsellerManager;
     public void SetGood() {
-        goodsellerManager.storePattern = StorePattern.resource;
-        titleText.text = "贸易站";
+            goodsellerManager.storePattern = StorePattern.resource;
+            titleText.text = "贸易站";
     }
     public void SetBattle()
     {

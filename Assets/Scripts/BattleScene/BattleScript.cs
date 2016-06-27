@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
+
 namespace Battle
 {
     public class BattleScript : MonoBehaviour
@@ -55,7 +57,7 @@ namespace Battle
         private void BackToMap()
         {
             Debug.Log("返回地图");
-            ///可以切换场景了 战斗结束了
+            SceneManager.LoadScene("Main");
         }
 
 

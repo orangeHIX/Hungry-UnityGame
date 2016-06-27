@@ -3,20 +3,10 @@ using System.Collections;
 
 public class CameraScript : MonoBehaviour
 {
-    public const int CameraWidth = 500;
-    public const int CameraHeight = 800;
+    public float panelWidth;
+    public float panelHeight;
+
     Vector3 newPosition;
-
-    // Use this for initialization
-    void Start()
-    {
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
 
     IEnumerator move()
     {
@@ -29,7 +19,7 @@ public class CameraScript : MonoBehaviour
         }
     }
 
-    void moveTo(Vector3 newPosition)
+    public void moveTo(Vector3 newPosition)
     {
         this.newPosition = newPosition;
         StartCoroutine("move");
@@ -37,22 +27,22 @@ public class CameraScript : MonoBehaviour
 
     public void moveRight()
     {
-        moveTo(transform.localPosition + new Vector3(CameraWidth, 0, 0));
+        moveTo(transform.localPosition + new Vector3(panelWidth, 0, 0));
     }
 
     public void moveLeft()
     {
-        moveTo(transform.localPosition + new Vector3(-CameraWidth, 0, 0));
+        moveTo(transform.localPosition + new Vector3(-panelWidth, 0, 0));
     }
 
     public void moveBottom()
     {
-        moveTo(transform.localPosition + new Vector3(0, -CameraHeight, 0));
+        moveTo(transform.localPosition + new Vector3(0, -panelHeight, 0));
     }
 
     public void moveTop()
     {
-        moveTo(transform.localPosition + new Vector3(0, CameraHeight, 0));
+        moveTo(transform.localPosition + new Vector3(0, panelHeight, 0));
     }
 
 }

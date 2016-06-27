@@ -20,36 +20,11 @@ public class BattleUnitManager : GameElementManager
     //public List<GameElement> currTeamList = new List<GameElement>();
     //public List<GameElement> militaryCamp = new List<GameElement>();
 
-    public void Awake()
+    public override void Awake()
     {
-        //currTeamList.Add(new GameElement("soldier1", 1));
-        //currTeamList.Add(new GameElement("soldier2", 2));
-        //currTeamList.Add(new GameElement("soldier3", 1));
-        //currTeamList.Add(new GameElement("soldier4", 0));
-
-        //militaryCamp.Add(new GameElement("soldier1",1));
-        //militaryCamp.Add(new GameElement("soldier2", 2));
-        //militaryCamp.Add(new GameElement("soldier3", 1));
-        //militaryCamp.Add(new GameElement("soldier4",2));
-        unitList.Clear();
-
-        BattleUnit b = new BattleUnit("陆战队", "大量且廉价的战士", true, 10f, 1f, 1f, 1f);
-        unitList.Add(new RosterItem(b, 1, 1, true));
-
-        b = new BattleUnit("狙击手", "训练有素的幽灵部队", true, 10f, 1f, 1f, 2f);
-        unitList.Add(new RosterItem(b, 0, 1, true));
-
-        b = new BattleUnit("医疗兵", "战场天使", true, 10f, 1f, 1f, 1f);
-        unitList.Add(new RosterItem(b, 1, 2, true));
-
+        base.Awake();
         maxTeamNum = 4;
 
-        //foreach (GameElement g in currTeamList) {
-        //    if (g.value > getBattleUnitNum(g.name))
-        //    {
-        //        throw new Exception("element "+g.name+" in currTeamList is consistent with militaryCamp data");
-        //    }
-        //}
     }
 
     public override bool TryChangeGameElementValue(string name, int change)
@@ -95,5 +70,19 @@ public class BattleUnitManager : GameElementManager
     public override void SetDataList(string name, List<GameElement> dataList)
     {
         unitList = dataList;
+    }
+
+    public override void LoadDataFirstTime()
+    {
+        unitList.Clear();
+
+        BattleUnit b = new BattleUnit("陆战队", "大量且廉价的战士", true, 10f, 1f, 1f, 1f);
+        unitList.Add(new RosterItem(b, 1, 1, true));
+
+        b = new BattleUnit("狙击手", "训练有素的幽灵部队", true, 10f, 1f, 1f, 2f);
+        unitList.Add(new RosterItem(b, 0, 1, true));
+
+        b = new BattleUnit("医疗兵", "战场天使", true, 10f, 1f, 1f, 1f);
+        unitList.Add(new RosterItem(b, 1, 2, true));
     }
 }

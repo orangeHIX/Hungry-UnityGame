@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using System;
+using System.Xml;
 
 public interface ISubject
 {
@@ -15,16 +17,19 @@ public interface IPersist
 {
     void SaveData();
     void LoadData();
+    void LoadDataFirstTime();
     string GetFileName();
 }
 
-public abstract class GameElementManager : MonoBehaviour, ISubject, IPersist
+
+public abstract class GameElementManager : PersistModel, ISubject
 {
 
+    //public static bool LOAD_ORIGINAL_DATA = false;
     public const string DEFAULT_DATA_LIST_NAME = "default";
 
     List<IDataChangeListener> listenerList = new List<IDataChangeListener>();
-    bool isFirst;
+    bool isFirstUpdate;
 
     public void Attach(IDataChangeListener listener)
     {
@@ -32,6 +37,7 @@ public abstract class GameElementManager : MonoBehaviour, ISubject, IPersist
         {
             listenerList.Add(listener);
         }
+        
     }
 
     public void Dettach(IDataChangeListener listener)
@@ -53,30 +59,42 @@ public abstract class GameElementManager : MonoBehaviour, ISubject, IPersist
         }
     }
 
-    public virtual void Awake()
-    {
+    //public virtual void Awake()
+    //{
+    //    string s = GetType().Name + "_FirstAwake";
+    //    int firstWake =  PlayerPrefs.GetInt(s, 0);
+    //    if (firstWake == 0 || LOAD_ORIGINAL_DATA)
+    //    {
+    //        LoadDataFirstTime();
+    //        PlayerPrefs.SetInt(s, 1);
+    //        PlayerPrefs.Save();
+    //    }
+    //    else {
+    //        LoadData();
+    //    }
+    //}
 
-    }
 
     public virtual void Start()
     {
         //Debug.Log("GameElementManager Start");
-        isFirst = true;
+        isFirstUpdate = true;
+        //Notify();
     }
 
     public virtual void Update()
     {
-        if (isFirst)
+        if (isFirstUpdate)
         {
             Notify();
-            isFirst = false;
+            isFirstUpdate = false;
         }
     }
 
-    public virtual void OnDestroy()
-    {
-        SaveData();
-    }
+    //public virtual void OnDestroy()
+    //{
+    //    SaveData();
+    //}
 
     public virtual bool CouldChangeGameElementValue(GameElement ele, int change)
     {
@@ -140,29 +158,40 @@ public abstract class GameElementManager : MonoBehaviour, ISubject, IPersist
     public const string DIRECTORY_NAME = "Saves";
     public const string SUFFIXE = ".binary";
 
-    public virtual string GetFileName()
+    public override string GetFileName()
     {
         return DIRECTORY_NAME +"/" + GetType().Name + SUFFIXE;
     }
 
     protected BinaryFormatter binFormat = new BinaryFormatter();//创建二进制序列化器
 
-    public virtual void SaveData()
+    public override void SaveData()
     {
-        if (!Directory.Exists("Saves"))
-            Directory.CreateDirectory("Saves");
+        if (!Directory.Exists(DIRECTORY_NAME))
+            Directory.CreateDirectory(DIRECTORY_NAME);
         using (FileStream fs = File.Create(GetFileName()))
         {
             binFormat.Serialize(fs, GetDataList());
         }
     }
 
-    public virtual void LoadData()
+    public override void LoadData()
     {
-        using (FileStream fs = File.OpenRead(GetFileName()))
+        string path = GetFileName();
+        if (File.Exists(path))
         {
-            List<GameElement> dataList = (List<GameElement>)binFormat.Deserialize(fs);
-            SetDataList(dataList);
+            using (FileStream fs = File.OpenRead(path))
+            {
+                List<GameElement> dataList = (List<GameElement>)binFormat.Deserialize(fs);
+                SetDataList(dataList);
+            }
+        }
+        else
+        {
+            Debug.LogError("File " + path + " doesn't exisit");
         }
     }
+
+    public override abstract void LoadDataFirstTime();
+
 }

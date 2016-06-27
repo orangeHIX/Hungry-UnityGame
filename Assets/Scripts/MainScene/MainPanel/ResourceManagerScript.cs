@@ -9,16 +9,9 @@ public class ResourceManagerScript : GameElementManager
 
 
     // Awake is called when the script instance is being loaded
-    public void Awake()
+    public override void Awake()
     {
-        currResList.Add(new GameElement("food", 4, true));
-        currResList.Add(new GameElement("iron", 55, true));
-        currResList.Add(new GameElement("fish", 33, true));
-        currResList.Add(new GameElement("gold", 22, true));
-
-        currResList.Add(new GameElement("芯片", 0, false));
-        currResList.Add(new GameElement("生命药品", 0, false));
-        currResList.Add(new GameElement("超合金", 0, false));
+        base.Awake();
     }
     //public bool CouldChangeResource(string name, int change)
     //{
@@ -102,5 +95,18 @@ public class ResourceManagerScript : GameElementManager
     public override void SetDataList(string name, List<GameElement> dataList)
     {
         currResList = dataList;
+    }
+
+    public override void LoadDataFirstTime()
+    {
+        currResList.Clear();
+        currResList.Add(new GameElement("food", 4, true));
+        currResList.Add(new GameElement("iron", 55, true));
+        currResList.Add(new GameElement("fish", 33, true));
+        currResList.Add(new GameElement("gold", 22, true));
+
+        currResList.Add(new GameElement("芯片", 0, false));
+        currResList.Add(new GameElement("生命药品", 0, false));
+        currResList.Add(new GameElement("超合金", 0, false));
     }
 }
