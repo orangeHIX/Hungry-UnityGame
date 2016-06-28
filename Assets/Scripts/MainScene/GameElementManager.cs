@@ -4,6 +4,7 @@ using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System;
 using System.Xml;
+using System.Runtime.Serialization;
 
 public interface ISubject
 {
@@ -16,7 +17,7 @@ public interface ISubject
 public interface IPersist
 {
     void SaveData();
-    void LoadData();
+    bool LoadData();
     void LoadDataFirstTime();
     string GetFileName();
 }
@@ -160,35 +161,41 @@ public abstract class GameElementManager : PersistModel, ISubject
 
     public override string GetFileName()
     {
-        return DIRECTORY_NAME +"/" + GetType().Name + SUFFIXE;
+        return GetAbsoluteDirectory() + "/" + GetType().Name + SUFFIXE;
+    }
+    private string GetAbsoluteDirectory() {
+        return Application.persistentDataPath + '/' + DIRECTORY_NAME;
     }
 
     protected BinaryFormatter binFormat = new BinaryFormatter();//创建二进制序列化器
 
     public override void SaveData()
     {
-        if (!Directory.Exists(DIRECTORY_NAME))
-            Directory.CreateDirectory(DIRECTORY_NAME);
+        string absolutePath = GetAbsoluteDirectory();
+        if (!Directory.Exists(absolutePath))
+            Directory.CreateDirectory(absolutePath);
         using (FileStream fs = File.Create(GetFileName()))
         {
             binFormat.Serialize(fs, GetDataList());
         }
     }
 
-    public override void LoadData()
+    public override bool LoadData()
     {
         string path = GetFileName();
         if (File.Exists(path))
         {
             using (FileStream fs = File.OpenRead(path))
             {
-                List<GameElement> dataList = (List<GameElement>)binFormat.Deserialize(fs);
-                SetDataList(dataList);
+                    List<GameElement> dataList = (List<GameElement>)binFormat.Deserialize(fs);
+                    SetDataList(dataList);
+                    return true;
             }
         }
         else
         {
             Debug.LogError("File " + path + " doesn't exisit");
+            return false;
         }
     }
 

@@ -100,10 +100,10 @@ public class ResourceManagerScript : GameElementManager
     public override void LoadDataFirstTime()
     {
         currResList.Clear();
-        currResList.Add(new GameElement("food", 4, true));
-        currResList.Add(new GameElement("iron", 55, true));
-        currResList.Add(new GameElement("fish", 33, true));
-        currResList.Add(new GameElement("gold", 22, true));
+        currResList.Add(new GameElement("资金", 100, true));
+        currResList.Add(new GameElement("食物", 55, true));
+        currResList.Add(new GameElement("能源", 33, true));
+        currResList.Add(new GameElement("合金", 22, true));
 
         currResList.Add(new GameElement("芯片", 0, false));
         currResList.Add(new GameElement("生命药品", 0, false));

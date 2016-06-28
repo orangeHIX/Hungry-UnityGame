@@ -238,21 +238,23 @@ public class HRManagerScript : GameElementManager {
     {
         currStaffList.Clear();
 
-        Staff s1 = new Staff("farmer", 10, true);
+        Staff s1 = new Staff("农场", 10, true);
         s1.consumeList = new List<GameElement>();
         s1.produceList = new List<GameElement>();
-        s1.produceList.Add(new GameElement("food", 1));
+        s1.produceList.Add(new GameElement("食物", 1));
 
-        Staff s2 = new Staff("worker", 0, false);
+        Staff s2 = new Staff("电厂", 0, true);
         s2.consumeList = new List<GameElement>();
-        s2.consumeList.Add(new GameElement("food", 2));
+        s2.consumeList.Add(new GameElement("食物", 1));
         s2.produceList = new List<GameElement>();
-        s2.produceList.Add(new GameElement("iron", 1));
+        s2.produceList.Add(new GameElement("能源", 1));
 
-        Staff s3 = new Staff("fisher", 2, true);
+        Staff s3 = new Staff("冶炼厂", 0, false);
         s3.consumeList = new List<GameElement>();
+        s3.consumeList.Add(new GameElement("食物", 1));
+        s3.consumeList.Add(new GameElement("能源", 5));
         s3.produceList = new List<GameElement>();
-        s3.produceList.Add(new GameElement("fish", 5));
+        s3.produceList.Add(new GameElement("合金", 1));
 
 
         currStaffList.Clear();
@@ -269,7 +271,11 @@ public class HRManagerScript : GameElementManager {
     const string ROOT_NODE_NAME = "HR";
     const string HR_NUM_NODE_NAME = "HRNum";
     const string HR_MAX_NUM_NODE_NAME = "HRMaxNum";
-    const string XML_FILE_NAME = DIRECTORY_NAME + "/HRNum.xml";
+    const string XML_FILE_NAME = "HRNum.xml";
+
+    private string GetFullXMLFileName() {
+        return Application.persistentDataPath + '/' + DIRECTORY_NAME + '/' + XML_FILE_NAME;
+    }
 
     public override void SaveData()
     {
@@ -288,23 +294,25 @@ public class HRManagerScript : GameElementManager {
         rootNode.AppendChild(HRMaxNumNode);
 
         doc.AppendChild(rootNode);
-        doc.Save(XML_FILE_NAME);
+        doc.Save(GetFullXMLFileName());
 
     }
 
-    public override void LoadData()
+    public override bool LoadData()
     {
         base.LoadData();
-        if (File.Exists(XML_FILE_NAME))
+        if (File.Exists(GetFullXMLFileName()))
         {
             XmlDocument doc = new XmlDocument();
 
-            doc.Load(XML_FILE_NAME);
+            doc.Load(GetFullXMLFileName());
             XmlNodeList xnl = doc.SelectSingleNode(ROOT_NODE_NAME).ChildNodes;
 
             humanNum = int.Parse(xnl.Item(0).InnerText);
             humanMaxNum = int.Parse(xnl.Item(1).InnerText);
+            return true;
         }
+        return false;
     }
 
 }

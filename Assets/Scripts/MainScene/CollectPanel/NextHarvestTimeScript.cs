@@ -35,7 +35,7 @@ public class NextHarvestTimeScript : MonoBehaviour{
             startTime = Time.time;
             ChangeNextHarvestText();
             isFirstUpdate = false;
-            StartCoroutine("Fade");
+            //StartCoroutine("Fade");
         }
         if (nextHarvestTime <= 0) {
             if ( HRManagerScript != null)
@@ -44,7 +44,8 @@ public class NextHarvestTimeScript : MonoBehaviour{
             }
             startTime = Time.time + nextHarvestTime;
         }
-	}
+        ChangeNextHarvestText();
+    }
 
     IEnumerator Fade()
     {

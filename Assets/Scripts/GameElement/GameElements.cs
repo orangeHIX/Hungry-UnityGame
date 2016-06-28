@@ -1,20 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 
 [Serializable]
 public class GameElement
 {
-    public string name {
+    public virtual string name {
         get;set;
     }
-    public int value {
+    public virtual int value {
         get;set;
     }
-    public bool enabled {
+    public virtual bool enabled {
         get;set;
     }
 
-    public string description;
+    public virtual string description {
+        get;set;
+    }
 
     public GameElement() {
     }
@@ -41,11 +44,48 @@ public class Staff : GameElement
     public List<GameElement> consumeList;
     public List<GameElement> produceList;
 
+    //StringBuilder sb = new StringBuilder();
+
     public Staff(string name, int value, bool enabled) : base(name, value, enabled)
     {
         consumeList = new List<GameElement>();
         produceList = new List<GameElement>();
+        //description = GetDescription();
     }
+
+    public override string description {
+        get
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append(name).AppendLine( "每单位人力");
+            sb.Append("消耗：");
+            if (consumeList.Count <= 0)
+            {
+                sb.Append("无");
+            }
+            else
+            {
+                foreach (GameElement ge in consumeList)
+                {
+                    sb.AppendFormat(ge.name).AppendFormat("-{0} ", ge.value);
+                }
+            }
+            sb.Append("\n生产：");
+            if (produceList.Count <= 0)
+            {
+                sb.Append("无");
+            }
+            else
+            {
+                foreach (GameElement ge in produceList)
+                {
+                    sb.AppendFormat(ge.name).AppendFormat("+{0} ", ge.value);
+                }
+            }
+            return sb.ToString();
+        }
+    }
+
 }
 [Serializable]
 public class Good : GameElement

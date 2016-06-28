@@ -14,7 +14,7 @@ public abstract class GameListScript: MonoBehaviour,IDataChangeListener {
 
     GameElementManager gameElementManager;
     //List<GameElement> eleList;
-    List<GameObject> listItems;
+    List<GameObject> listItems =new List<GameObject>();
 
     //private LayoutElement itemLayoutMemo;
 
@@ -43,13 +43,9 @@ public abstract class GameListScript: MonoBehaviour,IDataChangeListener {
     }
 
     void InitListItem() {
-        //itemLayoutMemo = listItemPrefab.GetComponent<LayoutElement>();
-        //if (itemLayoutMemo == null)
-        //{
-        //    throw new System.Exception("listItemPrefab must have LayoutElement to implement visiblility");
-        //}
+
         DestroyAllChildren();
-        listItems = new List<GameObject>();
+        listItems.Clear();
         List<GameElement> eleList = gameElementManager.GetDataList();
         for (int i = listItems.Count; i < eleList.Count; i++)
         {

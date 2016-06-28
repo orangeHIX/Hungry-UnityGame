@@ -11,17 +11,28 @@ public abstract class PersistModel : MonoBehaviour, IPersist
     public virtual void Awake() {
         if (needPersistence())
         {
-            string s = GetType().Name + "_FirstAwake";
-            int firstWake = PlayerPrefs.GetInt(s, 0);
-            if (firstWake == 0 || ALWAYS_LOAD_ORIGINAL_DATA)
+            //string s = GetType().Name + "_FirstAwake";
+            //int firstWake = PlayerPrefs.GetInt(s, 0);
+            //if (firstWake == 0 || ALWAYS_LOAD_ORIGINAL_DATA)
+            //{
+            //    LoadDataFirstTime();
+            //    PlayerPrefs.SetInt(s, 1);
+            //    PlayerPrefs.Save();
+            //}
+            //else
+            //{
+            //    LoadData();
+            //}
+            if (ALWAYS_LOAD_ORIGINAL_DATA)
             {
                 LoadDataFirstTime();
-                PlayerPrefs.SetInt(s, 1);
-                PlayerPrefs.Save();
             }
-            else
+            else if ( LoadData())
             {
-                LoadData();
+                Debug.Log(GetType().Name + " Load Data");
+            }
+            else {
+                LoadDataFirstTime();
             }
         }
         else {
@@ -44,7 +55,7 @@ public abstract class PersistModel : MonoBehaviour, IPersist
 
     public abstract string GetFileName();
 
-    public abstract void LoadData();
+    public abstract bool LoadData();
 
     public abstract void LoadDataFirstTime();
 

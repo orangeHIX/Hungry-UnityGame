@@ -20,10 +20,10 @@ public class NextHarvestManager : GameElementManager {
     public override void LoadDataFirstTime()
     {
         currNextHarVolList.Clear();
-        currNextHarVolList.Add(new GameElement("food", 0, false));
-        currNextHarVolList.Add(new GameElement("iron", 0, false));
-        currNextHarVolList.Add(new GameElement("fish", 0, false));
-        currNextHarVolList.Add(new GameElement("gold", 0, false));
+        currNextHarVolList.Add(new GameElement("资金", 0, false));
+        currNextHarVolList.Add(new GameElement("食物", 0, false));
+        currNextHarVolList.Add(new GameElement("能源", 0, false));
+        currNextHarVolList.Add(new GameElement("合金", 0, false));
         currNextHarVolList.ForEach(x => { x.value = 0; x.enabled = false; });
     }
 
